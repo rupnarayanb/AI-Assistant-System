@@ -5,3 +5,16 @@
   - /
   - /about
   - /time
+
+## APIs Implemented
+
+### GET APIs
+- /api/users
+- /api/products
+- /api/profile
+
+## Concepts Learned
+- Express routing
+- JSON responses
+- Nested object structures
+- API endpoint conventions

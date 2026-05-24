@@ -28,8 +28,28 @@ app.get('/time', (req, response)=>{
     response.send(date.toLocaleString())
 });
 
+app.get('/user',(req,res)=>{
+    res.send({'name':"rup", 'role':'rr'})
+})
+
+app.get('/api/users',(req,res)=>{
+    res.send([{'name':"rup", 'role':'r1'}, {'name':"rup2", 'role':'r2'}])
+})
+
+app.get('/api/products',(req,res)=>{
+    res.send([{'name':"produc1", 'owner':'Rup'}, {'name':"produc2", 'owner':'Rup2'}])
+})
+
+app.get('/api/profile',(req,res)=>{
+    res.send([{'name':'Rup', 'skills':{'frontend':true, 'backend':true}}])
+})
+
+app.use((req,res)=>{
+    res.status(404).send('error');
+});
+
 app.listen(3000,()=>{
-    console.log('ccc')
+    console.log('server started at port 3000')
     });
 
 // server.listen(3000,()=>{
