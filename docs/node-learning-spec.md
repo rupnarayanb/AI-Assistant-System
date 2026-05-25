@@ -110,6 +110,56 @@ Created REST-like endpoints:
 
 ---
 
+## 6. POST Requests + Request Body
+
+### Endpoint Built
+- POST /api/createUser
+
+### Concepts Learned
+- `app.post()` defines an endpoint that accepts submitted data
+- Client sends JSON data in the request body
+- `express.json()` middleware parses incoming JSON
+- Parsed request data is available as `req.body`
+- Server should read from `req.body`, not manually assign data to it
+
+### Testing Learned
+- Browser address bar is mainly useful for simple GET requests
+- POST requests need a tool that can send a request body
+- Tested POST API using Postman
+- Used:
+  - Method: POST
+  - URL: http://localhost:3000/api/createUser
+  - Body type: raw JSON
+  - Header: Content-Type: application/json
+
+### Debugging Lesson
+- A 404 occurred even though the POST route existed
+- Root cause: custom 404 middleware was placed before the POST route
+- Express runs routes and middleware from top to bottom
+- A fallback 404 handler should be placed at the end of the file
+
+### Working Behavior
+- Request body:
+  ```json
+  {
+    "name": "Asha",
+    "role": "Frontend Developer"
+  }
+  ```
+- Response body:
+  ```json
+  {
+    "message": "User created successfully",
+    "user": {
+      "id": 1,
+      "name": "Asha",
+      "role": "Frontend Developer"
+    }
+  }
+  ```
+
+---
+
 # 🧠 Core Concepts Understood
 
 - Request → Response lifecycle
@@ -118,6 +168,10 @@ Created REST-like endpoints:
 - Express abstraction over raw Node
 - JSON as API communication format
 - Routing + handler function model
+- POST request body handling
+- Express middleware order matters
+- 404 fallback middleware should be last
+- Postman can test APIs that need methods and bodies beyond browser GET
 
 ---
 
@@ -126,24 +180,42 @@ Created REST-like endpoints:
 The learner can:
 - Build Express server
 - Create REST GET APIs
+- Create basic POST APIs
 - Return JSON responses
+- Read submitted JSON data using `req.body`
+- Test POST APIs using Postman
 - Understand req/res flow
 - Debug basic backend issues
+- Debug route-order problems in Express
 - Use Git for version tracking
 
 ---
 
 # 🧭 Immediate Next Step (Current Sprint)
 
-## Topic: POST Requests + Request Body
+## Topic: Basic Request Validation
 
 ### Goals
-- Learn how frontend sends data to backend
+- Learn how backend protects itself from incomplete client input
 - Understand:
-  - app.post()
-  - request body handling
-  - JSON parsing middleware
-  - Express middleware concept
+  - required fields
+  - `400 Bad Request`
+  - early return after sending an error response
+  - validating `req.body.name`
+  - validating `req.body.role`
+
+### Validation Exercise
+- Update POST /api/createUser to reject missing data
+- If `name` or `role` is missing, return:
+  ```json
+  {
+    "message": "Name and role are required"
+  }
+  ```
+- Use HTTP status code:
+  ```txt
+  400 Bad Request
+  ```
 
 ---
 
@@ -151,8 +223,10 @@ The learner can:
 
 ## Phase 1 — Backend Core (Current)
 - GET APIs ✅
-- POST APIs (next)
-- Middleware
+- POST APIs ✅
+- JSON body parsing middleware ✅
+- Middleware order ✅
+- Basic request validation (current)
 - Error handling
 - API structuring patterns
 

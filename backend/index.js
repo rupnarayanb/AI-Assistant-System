@@ -1,6 +1,7 @@
 const http = require('http');
 const express = require('express');
 
+
 //console.log(express);
 // const server = http.createServer(function(req,response){
 //     console.log(req.url);
@@ -15,6 +16,9 @@ const express = require('express');
     
 // });
 const app = express();
+
+app.use(express.json());
+
 app.get('/', (req, response)=>{
     response.send('home')
 });
@@ -44,6 +48,24 @@ app.get('/api/profile',(req,res)=>{
     res.send([{'name':'Rup', 'skills':{'frontend':true, 'backend':true}}])
 })
 
+app.post('/api/createUser',(req,res)=>{
+
+    
+    const userdata = req.body;
+
+    if(!userdata.name || !userdata.id){
+        return res.status(400).send('name and id is required')
+    }
+    res.send({
+        "message": "User created successfully",
+        "user": {
+            "id": 1,
+            "name": userdata.name,
+            "role": userdata.role
+        }
+    })
+})
+
 app.use((req,res)=>{
     res.status(404).send('error');
 });
@@ -55,7 +77,6 @@ app.listen(3000,()=>{
 // server.listen(3000,()=>{
 //     console.log('ccc')
 // });
-
 
 
 
