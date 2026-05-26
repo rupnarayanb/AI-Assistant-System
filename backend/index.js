@@ -1,5 +1,7 @@
 const http = require('http');
 const express = require('express');
+const users = [];
+nextId = 0;
 
 
 //console.log(express);
@@ -50,16 +52,21 @@ app.get('/api/profile',(req,res)=>{
 
 app.post('/api/createUser',(req,res)=>{
 
-    
+  
     const userdata = req.body;
 
-    if(!userdata.name || !userdata.id){
+    if(!userdata.name || !userdata.role){
         return res.status(400).send('name and id is required')
     }
-    res.send({
+
+    nextid = nextId++;
+
+    users.push(userdata);
+   
+    return res.send({
         "message": "User created successfully",
         "user": {
-            "id": 1,
+            "id": nextId,
             "name": userdata.name,
             "role": userdata.role
         }
