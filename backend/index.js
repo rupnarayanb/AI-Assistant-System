@@ -1,7 +1,8 @@
 const http = require('http');
 const express = require('express');
 const users = [];
-nextId = 0;
+createdUser = [];
+
 
 
 //console.log(express);
@@ -39,7 +40,7 @@ app.get('/user',(req,res)=>{
 })
 
 app.get('/api/users',(req,res)=>{
-    res.send([{'name':"rup", 'role':'r1'}, {'name':"rup2", 'role':'r2'}])
+    res.send(createdUser);
 })
 
 app.get('/api/products',(req,res)=>{
@@ -56,20 +57,24 @@ app.post('/api/createUser',(req,res)=>{
     const userdata = req.body;
 
     if(!userdata.name || !userdata.role){
-        return res.status(400).send('name and id is required')
+        return res.status(400).send('name and role is required')
     }
 
-    nextid = nextId++;
+    let nextId = 0;
 
-    users.push(userdata);
+    nextId = nextId++;
+
+    createdUser = {
+        "id": nextId,
+        "name": userdata.name,
+        "role": userdata.role
+    }
+
+    users.push(createdUser);
    
     return res.send({
         "message": "User created successfully",
-        "user": {
-            "id": nextId,
-            "name": userdata.name,
-            "role": userdata.role
-        }
+        "user": createdUser
     })
 })
 
