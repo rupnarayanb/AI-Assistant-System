@@ -1,7 +1,7 @@
 const http = require('http');
 const express = require('express');
 const users = [];
-createdUser = [];
+let nextId = 1;
 
 
 
@@ -40,7 +40,19 @@ app.get('/user',(req,res)=>{
 })
 
 app.get('/api/users',(req,res)=>{
-    res.send(createdUser);
+    res.send(users);
+})
+
+app.get('/api/users/:id',(req,res)=>{
+    const userId = Number(req.params.id);
+    console.log(users);
+    const user = users.find((item) => item.id === userId);
+
+    if (!user) {
+        return res.status(404).send({ message: 'User not found' });
+    }
+
+    return res.send(user);
 })
 
 app.get('/api/products',(req,res)=>{
@@ -52,23 +64,19 @@ app.get('/api/profile',(req,res)=>{
 })
 
 app.post('/api/createUser',(req,res)=>{
-
-  
     const userdata = req.body;
 
     if(!userdata.name || !userdata.role){
         return res.status(400).send('name and role is required')
     }
 
-    let nextId = 0;
-
-    nextId = nextId++;
-
-    createdUser = {
+    const createdUser = {
         "id": nextId,
         "name": userdata.name,
         "role": userdata.role
-    }
+    };
+
+    nextId += 1;
 
     users.push(createdUser);
    
@@ -89,7 +97,6 @@ app.listen(3000,()=>{
 // server.listen(3000,()=>{
 //     console.log('ccc')
 // });
-
 
 
 
