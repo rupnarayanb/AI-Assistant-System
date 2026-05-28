@@ -55,12 +55,64 @@ app.get('/api/users/:id',(req,res)=>{
     return res.send(user);
 })
 
+
+
 app.get('/api/products',(req,res)=>{
     res.send([{'name':"produc1", 'owner':'Rup'}, {'name':"produc2", 'owner':'Rup2'}])
 })
 
 app.get('/api/profile',(req,res)=>{
     res.send([{'name':'Rup', 'skills':{'frontend':true, 'backend':true}}])
+})
+
+app.put('/api/users/:id',(req,res)=>{
+    const userdata = req.body;
+    const userId = Number(req.params.id);
+  
+    const user = users.find((item) => item.id === userId);
+
+    if (!user) {
+        return res.status(404).send({ message: 'User not found' });
+    }
+
+    const updatedUser = {
+        "id": nextId,
+        "name": user.name,
+        "role": "Fullstack"
+    };
+
+    //users.push(updatedUser);
+    console.log(users);
+
+    return res.send({
+        "message": "User updated successfully",
+        "user": updatedUser
+    })
+})
+
+app.delete('/api/users/:id',(req,res)=>{
+    const userdata = req.body;
+    const userId = Number(req.params.id);
+   
+    const user = users.find((item) => item.id === userId);
+
+    if (!user) {
+        return res.status(404).send({ message: 'User not found' });
+    }
+
+    const deleteUser = {
+        "name": user.name,
+        "role": user.role,
+    };
+
+    users.pop(deleteUser);
+
+    console.log(users);
+
+    return res.send({
+        "message": "User deleted successfully",
+        "user": deleteUser
+    })
 })
 
 app.post('/api/createUser',(req,res)=>{
