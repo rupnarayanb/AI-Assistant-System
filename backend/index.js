@@ -70,18 +70,19 @@ app.put('/api/users/:id',(req,res)=>{
     const userId = Number(req.params.id);
   
     const user = users.find((item) => item.id === userId);
+    const userIndex = users.findIndex((item) => item.id === userId);
 
     if (!user) {
         return res.status(404).send({ message: 'User not found' });
     }
 
     const updatedUser = {
-        "id": nextId,
-        "name": user.name,
-        "role": "Fullstack"
+        "id": userId,
+        "name": userdata.name ? userdata.name : user.name,
+        "role": userdata.role ? userdata.role : user.role                                  
     };
 
-    //users.push(updatedUser);
+    users[userIndex] = updatedUser;
     console.log(users);
 
     return res.send({
@@ -91,10 +92,10 @@ app.put('/api/users/:id',(req,res)=>{
 })
 
 app.delete('/api/users/:id',(req,res)=>{
-    const userdata = req.body;
     const userId = Number(req.params.id);
    
     const user = users.find((item) => item.id === userId);
+    const userIndex = users.findIndex((item) => item.id === userId);
 
     if (!user) {
         return res.status(404).send({ message: 'User not found' });
@@ -105,7 +106,8 @@ app.delete('/api/users/:id',(req,res)=>{
         "role": user.role,
     };
 
-    users.pop(deleteUser);
+
+    users.splice(userIndex,1);
 
     console.log(users);
 
@@ -119,7 +121,9 @@ app.post('/api/createUser',(req,res)=>{
     const userdata = req.body;
 
     if(!userdata.name || !userdata.role){
-        return res.status(400).send('name and role is required')
+        return res.status(400).send({
+            message:"Name or Role is missing"
+        })
     }
 
     const createdUser = {
@@ -139,12 +143,12 @@ app.post('/api/createUser',(req,res)=>{
 })
 
 app.use((req,res)=>{
-    res.status(404).send('error');
+    res.status(404).send({message:"not found"});
 });
 
 app.listen(3000,()=>{
     console.log('server started at port 3000')
-    });
+});
 
 // server.listen(3000,()=>{
 //     console.log('ccc')

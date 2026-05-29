@@ -160,6 +160,60 @@ Created REST-like endpoints:
 
 ---
 
+## 7. Route Params + Read By ID
+
+### Endpoint Built
+- GET /api/users/:id
+
+### Concepts Learned
+- Route parameters are dynamic parts of the URL
+- `req.params.id` gives access to the value in the path
+- URL values arrive as strings and often need conversion before comparison
+- Backend can search an in-memory array to find a matching record
+- A missing record should return `404 Not Found`
+
+### Working Behavior
+- `GET /api/users/1` returns the matching user
+- If no matching user exists, the API returns a not-found response
+
+---
+
+## 8. PUT Requests + Update By ID
+
+### Endpoint Built
+- PUT /api/users/:id
+
+### Concepts Learned
+- `PUT` updates an existing resource
+- `req.params.id` identifies the record to update
+- `req.body` carries the new values
+- Update logic should find the existing item first, then modify it
+- Missing records should still return `404 Not Found`
+
+### Working Behavior
+- `PUT /api/users/1` updates the matching user
+- The updated record is returned after the change
+
+---
+
+## 9. DELETE Requests + Remove By ID
+
+### Endpoint Built
+- DELETE /api/users/:id
+
+### Concepts Learned
+- `DELETE` removes an existing resource
+- Route params identify which record to remove
+- The in-memory array can be filtered or spliced to remove a match
+- A missing record should return `404 Not Found`
+- Successful delete should confirm the record was removed
+
+### Working Behavior
+- `DELETE /api/users/1` removes the matching user from memory
+- The remaining users stay available in the array
+
+---
+
 # 🧠 Core Concepts Understood
 
 - Request → Response lifecycle
@@ -172,6 +226,11 @@ Created REST-like endpoints:
 - Express middleware order matters
 - 404 fallback middleware should be last
 - Postman can test APIs that need methods and bodies beyond browser GET
+- Route parameters with `req.params`
+- In-memory CRUD with arrays
+- `404 Not Found` for missing records
+- `PUT` updates existing resources
+- `DELETE` removes existing resources
 
 ---
 
@@ -181,6 +240,9 @@ The learner can:
 - Build Express server
 - Create REST GET APIs
 - Create basic POST APIs
+- Read a record by id
+- Update a record by id
+- Delete a record by id
 - Return JSON responses
 - Read submitted JSON data using `req.body`
 - Test POST APIs using Postman
@@ -193,29 +255,16 @@ The learner can:
 
 # 🧭 Immediate Next Step (Current Sprint)
 
-## Topic: Basic Request Validation
+## Topic: Error Handling
 
 ### Goals
-- Learn how backend protects itself from incomplete client input
+- Learn how backend responds cleanly when something goes wrong
 - Understand:
-  - required fields
   - `400 Bad Request`
+  - `404 Not Found`
   - early return after sending an error response
-  - validating `req.body.name`
-  - validating `req.body.role`
-
-### Validation Exercise
-- Update POST /api/createUser to reject missing data
-- If `name` or `role` is missing, return:
-  ```json
-  {
-    "message": "Name and role are required"
-  }
-  ```
-- Use HTTP status code:
-  ```txt
-  400 Bad Request
-  ```
+  - consistent JSON error responses
+  - when to use route-specific errors versus fallback errors
 
 ---
 
@@ -224,10 +273,13 @@ The learner can:
 ## Phase 1 — Backend Core (Current)
 - GET APIs ✅
 - POST APIs ✅
+- PUT APIs ✅
+- DELETE APIs ✅
 - JSON body parsing middleware ✅
 - Middleware order ✅
-- Basic request validation (current)
-- Error handling
+- Route params ✅
+- Basic request validation ✅
+- Error handling (current)
 - API structuring patterns
 
 ---
