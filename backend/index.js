@@ -2,7 +2,7 @@ const http = require('http');
 const express = require('express');
 const users = [];
 let nextId = 1;
-
+const routes = require('./routes');
 
 
 //console.log(express);
@@ -35,7 +35,7 @@ app.get('/time', (req, response)=>{
     response.send(date.toLocaleString())
 });
 
-app.get('/user',(req,res)=>{
+app.get(routes.user,(req,res)=>{
     res.send({'name':"rup", 'role':'rr'})
 })
 
