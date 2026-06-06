@@ -2,7 +2,8 @@ const http = require('http');
 const express = require('express');
 const users = [];
 let nextId = 1;
-const routes = require('./routes');
+//const routes = require('./routes');
+const expRoutes = require('./expressroutes');
 
 
 //console.log(express);
@@ -26,18 +27,20 @@ app.get('/', (req, response)=>{
     response.send('home')
 });
 
-app.get('/about', (req, response)=>{
-    response.send('about')
-});
+app.use(expRoutes);
 
-app.get('/time', (req, response)=>{
-    const date = new Date();
-    response.send(date.toLocaleString())
-});
+// app.get(routes.about, (req, response)=>{
+//     response.send('about what')
+// });
 
-app.get(routes.user,(req,res)=>{
-    res.send({'name':"rup", 'role':'rr'})
-})
+// app.get(routes.time, (req, response)=>{
+//     const date = new Date();
+//     response.send(date.toLocaleString())
+// });
+
+// app.get(routes.user,(req,res)=>{
+//     res.send({'name':"rup", 'role':'rr'})
+// })
 
 app.get('/api/users',(req,res)=>{
     res.send(users);
@@ -153,6 +156,3 @@ app.listen(3000,()=>{
 // server.listen(3000,()=>{
 //     console.log('ccc')
 // });
-
-
-

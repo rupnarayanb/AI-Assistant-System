@@ -231,6 +231,8 @@ Created REST-like endpoints:
 - `404 Not Found` for missing records
 - `PUT` updates existing resources
 - `DELETE` removes existing resources
+- CommonJS `require` / `module.exports`
+- Separating reusable route data from server setup
 
 ---
 
@@ -243,6 +245,7 @@ The learner can:
 - Read a record by id
 - Update a record by id
 - Delete a record by id
+- Organize route constants across files
 - Return JSON responses
 - Read submitted JSON data using `req.body`
 - Test POST APIs using Postman
@@ -255,16 +258,22 @@ The learner can:
 
 # 🧭 Immediate Next Step (Current Sprint)
 
-## Topic: Error Handling
+## Topic: API Structuring Patterns
 
 ### Goals
-- Learn how backend responds cleanly when something goes wrong
+- Learn how backend code is organized as it grows
 - Understand:
-  - `400 Bad Request`
-  - `404 Not Found`
-  - early return after sending an error response
-  - consistent JSON error responses
-  - when to use route-specific errors versus fallback errors
+  - CommonJS `require`
+  - CommonJS `module.exports`
+  - route constants versus Express routers
+  - keeping `index.js` focused on app setup
+  - moving one route safely at a time
+
+### Today’s Task
+- Make `backend/routes.js` export the route path cleanly
+- Consume that exported value from `backend/index.js`
+- Keep the current `/api/user` route working after the split
+- Restart the server and test the route in the browser or Postman
 
 ---
 
@@ -279,8 +288,8 @@ The learner can:
 - Middleware order ✅
 - Route params ✅
 - Basic request validation ✅
-- Error handling (current)
-- API structuring patterns
+- Error handling ✅
+- API structuring patterns (current)
 
 ---
 
