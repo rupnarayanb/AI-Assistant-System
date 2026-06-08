@@ -5,7 +5,7 @@ let nextId = 1;
 //const routes = require('./routes');
 const expRoutes = require('./expressroutes');
 
-
+const routes = expRoutes(users);
 //console.log(express);
 // const server = http.createServer(function(req,response){
 //     console.log(req.url);
@@ -27,7 +27,8 @@ app.get('/', (req, response)=>{
     response.send('home')
 });
 
-app.use(expRoutes);
+app.use(routes);
+
 
 // app.get(routes.about, (req, response)=>{
 //     response.send('about what')
@@ -42,9 +43,7 @@ app.use(expRoutes);
 //     res.send({'name':"rup", 'role':'rr'})
 // })
 
-app.get('/api/users',(req,res)=>{
-    res.send(users);
-})
+
 
 app.get('/api/users/:id',(req,res)=>{
     const userId = Number(req.params.id);
@@ -56,16 +55,6 @@ app.get('/api/users/:id',(req,res)=>{
     }
 
     return res.send(user);
-})
-
-
-
-app.get('/api/products',(req,res)=>{
-    res.send([{'name':"produc1", 'owner':'Rup'}, {'name':"produc2", 'owner':'Rup2'}])
-})
-
-app.get('/api/profile',(req,res)=>{
-    res.send([{'name':'Rup', 'skills':{'frontend':true, 'backend':true}}])
 })
 
 app.put('/api/users/:id',(req,res)=>{

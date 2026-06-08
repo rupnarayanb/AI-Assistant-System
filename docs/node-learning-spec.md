@@ -214,6 +214,31 @@ Created REST-like endpoints:
 
 ---
 
+## 10. Express Router Upgrade
+
+### What Was Done
+- Replaced the route-constants file with a real `express.Router()`
+- Moved the small GET routes into the router file
+- Mounted the router from `index.js` with `app.use(...)`
+
+### Concepts Learned
+- A router file owns route handlers directly
+- `index.js` should stay focused on app setup and server startup
+- `express.Router()` is the right tool when route groups start to grow
+- Route behavior should stay the same after the move
+
+### Current Router Scope
+- `/api/user`
+- `/about`
+- `/time`
+
+### Remaining Work in This Phase
+- Move one CRUD route into the router next
+- Keep `users` state working while the routes are split
+- Learn when a router file should own paths versus handlers
+
+---
+
 # 🧠 Core Concepts Understood
 
 - Request → Response lifecycle
@@ -232,6 +257,7 @@ Created REST-like endpoints:
 - `PUT` updates existing resources
 - `DELETE` removes existing resources
 - CommonJS `require` / `module.exports`
+- `express.Router()` for grouped routes
 - Separating reusable route data from server setup
 
 ---
@@ -245,7 +271,7 @@ The learner can:
 - Read a record by id
 - Update a record by id
 - Delete a record by id
-- Organize route constants across files
+- Organize routes into a router file
 - Return JSON responses
 - Read submitted JSON data using `req.body`
 - Test POST APIs using Postman
@@ -258,22 +284,22 @@ The learner can:
 
 # 🧭 Immediate Next Step (Current Sprint)
 
-## Topic: API Structuring Patterns
+## Topic: Express Router Expansion
 
 ### Goals
 - Learn how backend code is organized as it grows
 - Understand:
-  - CommonJS `require`
-  - CommonJS `module.exports`
-  - route constants versus Express routers
-  - keeping `index.js` focused on app setup
-  - moving one route safely at a time
+  - `express.Router()`
+  - `app.use(router)`
+  - route handlers living outside `index.js`
+  - keeping shared state stable while routes move
+  - moving one CRUD route safely at a time
 
 ### Today’s Task
-- Make `backend/routes.js` export the route path cleanly
-- Consume that exported value from `backend/index.js`
-- Keep the current `/api/user` route working after the split
-- Restart the server and test the route in the browser or Postman
+- Move one CRUD route into `backend/expressroutes.js`
+- Keep the existing `/api/user`, `/about`, and `/time` routes working
+- Leave `users` and `nextId` in `index.js` for now
+- Restart the server and test the moved route in the browser or Postman
 
 ---
 
@@ -289,7 +315,8 @@ The learner can:
 - Route params ✅
 - Basic request validation ✅
 - Error handling ✅
-- API structuring patterns (current)
+- Express router upgrade ✅
+- API structuring patterns (next)
 
 ---
 
