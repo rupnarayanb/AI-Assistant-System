@@ -1,7 +1,11 @@
 const express = require('express');
 //const expRoutes = express.Router();
-function createRouterFactory(users, nextId){
+function createRouterFactory(state){
+
+    const users = state.users;
+    
     const router = express.Router();
+   
 
     router.post('/api/createUser',(req,res)=>{
         const userdata = req.body;
@@ -13,12 +17,12 @@ function createRouterFactory(users, nextId){
         }
     
         const createdUser = {
-            "id": nextId,
+            "id": state.nextId,
             "name": userdata.name,
             "role": userdata.role
         };
     
-        nextId += 1;
+        state.nextId += 1;
     
         users.push(createdUser);
        

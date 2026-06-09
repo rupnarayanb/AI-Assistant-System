@@ -5,13 +5,22 @@ let nextId = 1;
 
 const expRoutes = require('./expressroutes');
 
-const routes = expRoutes(users, nextId);
+const stateObj = {
+    users,
+    nextId
+}
+
+const routes = expRoutes(stateObj);
+
+
 
 const app = express();
 
 app.use(express.json());
 
 app.use(routes);
+
+
 
 
 app.use((req,res)=>{
