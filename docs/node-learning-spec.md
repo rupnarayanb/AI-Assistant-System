@@ -239,6 +239,143 @@ Created REST-like endpoints:
 
 ---
 
+## 11. Shared State Router Factory
+
+### What Was Done
+- Changed `expressroutes.js` from a plain router export into a router factory
+- Passed shared app state from `index.js` into the router factory
+- Kept `users` and `nextId` available to mutating routes through the shared state object
+
+### Concepts Learned
+- A router factory can receive dependencies from `index.js`
+- Reference types like arrays can be shared through an object
+- Counter values should live inside the shared state object if they must advance across requests
+- The router can own route behavior while `index.js` owns application state creation
+
+### Current Shared-State Scope
+- `users`
+- `nextId`
+- `POST /api/createUser`
+- `PUT /api/users/:id`
+- `DELETE /api/users/:id`
+- `GET /api/users`
+
+---
+
+## 12. PostgreSQL Learning Start
+
+### What Was Decided
+- PostgreSQL is the first database to learn for this app
+- `users` array is the v1 in-memory version of a database table
+- `POST /api/createUser` will be the first route to migrate later
+- Database credentials will live in environment variables
+
+### Concepts Learned
+- PostgreSQL is the persistent storage layer for backend data
+- Tables store structured rows that mirror your current user objects
+- A Node app connects to PostgreSQL through a driver/client library
+- A separate connection file and query/service file will keep the backend organized
+
+### Current PostgreSQL Scope
+- table shape: `users(id, name, role)`
+- first database route: `POST /api/createUser`
+- future config values: host, port, database, user, password
+
+### Latest Status
+- still using in-memory state for the app
+- no PostgreSQL driver installed yet
+- no connection file created yet
+- ready to start practical database setup next
+
+## 13. PostgreSQL Installation & Exploration
+
+### Completed
+- Installed PostgreSQL 17 using Homebrew
+- Started PostgreSQL service
+- Verified installation using `psql --version`
+- Entered PostgreSQL shell using `psql postgres`
+- Listed databases using `\l`
+
+### Concepts Learned
+- PostgreSQL is a database server independent of Node.js
+- PostgreSQL persists data to disk
+- In-memory arrays disappear after server restart
+- PostgreSQL typically listens on port `5432`
+
+### Progress Update
+- Created database: `ai_assistant`
+- Connected to database using `psql ai_assistant`
+- Learned difference between terminal commands and SQL commands
+- Learned that `psql` is a client used to connect to PostgreSQL
+
+
+## 14. First Database & Table
+
+### Completed
+- Created database: `ai_assistant`
+- Connected using `psql ai_assistant`
+- Created table: `users`
+- Listed tables using `\dt`
+
+### SQL Learned
+- `CREATE DATABASE`
+- `CREATE TABLE`
+
+### Concepts Learned
+- Databases contain tables
+- Tables contain rows
+- Columns require explicit data types
+- PostgreSQL validates schema during table creation
+
+### Current Schema
+users(
+  id INTEGER,
+  name TEXT,
+  role TEXT
+)
+
+### Pending
+- Insert first row
+- Query data using SELECT
+- Update rows
+- Delete rows
+- Add auto-generated IDs
+
+### Progress Update
+- Created `users` table
+- Inserted first row into PostgreSQL
+- Queried data using `SELECT * FROM users;`
+
+### SQL Learned
+- CREATE DATABASE
+- CREATE TABLE
+- INSERT INTO ... VALUES ...
+- SELECT ... FROM ...
+
+### CRUD Status
+- Create ✅
+- Read ✅
+- Update ⏳
+- Delete ⏳
+
+### Current Architecture
+Angular
+  ↓
+Node/Express
+  ↓
+PostgreSQL (planned)
+  ↓
+Disk persistence
+
+### Pending
+- Create `ai_assistant` database
+- Connect to the database
+- Create `users` table
+- Insert first row
+- Run first SQL query
+
+---
+
 # 🧠 Core Concepts Understood
 
 - Request → Response lifecycle
@@ -259,6 +396,11 @@ Created REST-like endpoints:
 - CommonJS `require` / `module.exports`
 - `express.Router()` for grouped routes
 - Separating reusable route data from server setup
+- Router factories for injected state
+- Shared state object passed from `index.js`
+- PostgreSQL as persistent storage
+- Table/row/column model
+- Connection file vs service file
 
 ---
 
@@ -272,6 +414,7 @@ The learner can:
 - Update a record by id
 - Delete a record by id
 - Organize routes into a router file
+- Pass shared state into a router factory
 - Return JSON responses
 - Read submitted JSON data using `req.body`
 - Test POST APIs using Postman
@@ -279,27 +422,29 @@ The learner can:
 - Debug basic backend issues
 - Debug route-order problems in Express
 - Use Git for version tracking
+- Plan PostgreSQL table and connection setup
 
 ---
 
 # 🧭 Immediate Next Step (Current Sprint)
 
-## Topic: Express Router Expansion
+## Topic: PostgreSQL Setup Start
 
 ### Goals
-- Learn how backend code is organized as it grows
+- Learn how backend state moves from memory to PostgreSQL
 - Understand:
-  - `express.Router()`
-  - `app.use(router)`
-  - route handlers living outside `index.js`
-  - keeping shared state stable while routes move
-  - moving one CRUD route safely at a time
+  - why in-memory state is only temporary
+  - database as a persistent data store
+  - basic connection setup
+  - how CRUD will map to database operations
+  - how the `users` table maps to current app data
 
 ### Today’s Task
-- Move one CRUD route into `backend/expressroutes.js`
-- Keep the existing `/api/user`, `/about`, and `/time` routes working
-- Leave `users` and `nextId` in `index.js` for now
-- Restart the server and test the moved route in the browser or Postman
+- Learn the PostgreSQL table shape for `users(id, name, role)`
+- Learn the conceptual role of a connection file
+- Learn the conceptual role of a query/service file
+- Map `POST /api/createUser` to a future SQL `INSERT`
+- Keep the current in-memory router factory working while planning the DB migration
 
 ---
 
@@ -316,7 +461,8 @@ The learner can:
 - Basic request validation ✅
 - Error handling ✅
 - Express router upgrade ✅
-- API structuring patterns (next)
+- Shared state router factory ✅
+- PostgreSQL learning start (current)
 
 ---
 
