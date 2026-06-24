@@ -1,13 +1,11 @@
 const http = require('http');
 const express = require('express');
 const users = [];
-let nextId = 1;
 
 const expRoutes = require('./expressroutes');
 
 const stateObj = {
-    users,
-    nextId
+    users
 }
 
 const routes = expRoutes(stateObj);

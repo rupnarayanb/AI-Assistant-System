@@ -8,7 +8,7 @@ function createRouterFactory(state){
     const router = express.Router();
    
 
-    router.post('/api/createUser',(req,res)=>{
+    router.post('/api/createUser',async (req,res)=>{
         const userdata = req.body;
     
         if(!userdata.name || !userdata.role){
@@ -16,20 +16,17 @@ function createRouterFactory(state){
                 message:"Name or Role is missing"
             })
         }
+
+        const queryText = `INSERT INTO users(name, role ) VALUES($1, $2)`;
+        const queryValues = [userdata.name,userdata.role];
     
-        const createdUser = {
-            "id": state.nextId,
-            "name": userdata.name,
-            "role": userdata.role
-        };
-    
-        state.nextId += 1;
-    
-        users.push(createdUser);
+        //users.push(createdUser);
+
+        const createUser = await db.query(queryText, queryValues);
        
         return res.send({
             "message": "User created successfully",
-            "user": createdUser
+            "user": createUser
         })
     })
 
