@@ -17,17 +17,23 @@ function createRouterFactory(state){
             })
         }
 
-        const queryText = `INSERT INTO users(name, role ) VALUES($1, $2)`;
+        const queryText = `INSERT INTO users(name, role ) VALUES($1, $2) RETURNING *`;
         const queryValues = [userdata.name,userdata.role];
     
         //users.push(createdUser);
-
-        const createUser = await db.query(queryText, queryValues);
+        try{
+            const createUser = await db.query(queryText, queryValues);
        
-        return res.send({
-            "message": "User created successfully",
-            "user": createUser
-        })
+            return res.status(201).send({
+                "message": "User created successfully",
+                "user": createUser.rows[0]
+            })     
+        }catch(error){
+            return res.status(500).send({
+                "message":"Internal server error"
+            })
+        }
+        
     })
 
     router.put('/api/users/:id',(req,res)=>{
