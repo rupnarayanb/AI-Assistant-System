@@ -119,6 +119,7 @@ function createRouterFactory(state){
               const allUser = await db.query('SELECT * FROM users');
               response.json(allUser.rows);
             }catch(error){
+                 console.error(error);
                 response.status(500).json({"message":"Database Error"});
             }
         });
@@ -164,16 +165,6 @@ function createRouterFactory(state){
     router.get('/', (req, response)=>{
         response.send('home')
     });
-
-    
-        router.get('/api/users',async (req,response)=>{
-            try{
-              const allUser = await db.query('SELECT * FROM users');
-              response.json(allUser.rows);
-            }catch(error){
-                response.status(500).json({"message":"Database Error"});
-            }
-        });
     
 
     
