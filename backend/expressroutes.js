@@ -1,5 +1,7 @@
 const express = require('express');
 const db = require('./db');
+const userService = require('./services/userService');
+const userController = require('./controllers/controllers');
 //const expRoutes = express.Router();
 function createRouterFactory(state){
 
@@ -113,15 +115,11 @@ function createRouterFactory(state){
         response.send('home')
     });
 
+    //userController.getAllUsers();
+
     
-        router.get('/api/users',async (req,response)=>{
-            try{
-              const allUser = await db.query('SELECT * FROM users');
-              response.json(allUser.rows);
-            }catch(error){
-                 console.error(error);
-                response.status(500).json({"message":"Database Error"});
-            }
+        router.get('/api/users', (req,response)=>{
+            userController.getAllUsers(req,response);
         });
     
 
