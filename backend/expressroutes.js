@@ -10,31 +10,8 @@ function createRouterFactory(state){
     const router = express.Router();
    
 
-    router.post('/api/createUser',async (req,res)=>{
-        const userdata = req.body;
-    
-        if(!userdata.name || !userdata.role){
-            return res.status(400).send({
-                message:"Name or Role is missing"
-            })
-        }
-
-        const queryText = `INSERT INTO users(name, role ) VALUES($1, $2) RETURNING *`;
-        const queryValues = [userdata.name,userdata.role];
-    
-        //users.push(createdUser);
-        try{
-            const createUser = await db.query(queryText, queryValues);
-       
-            return res.status(201).send({
-                "message": "User created successfully",
-                "user": createUser.rows[0]
-            })     
-        }catch(error){
-            return res.status(500).send({
-                "message":"Internal server error"
-            })
-        }
+    router.post('/api/createUser', (req,res)=>{
+        userController.createUser(req,res); 
         
     })
 
