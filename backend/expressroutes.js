@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('./db');
 const userService = require('./services/userService');
 const userController = require('./controllers/controllers');
+const uservalidation = require('./middleware/userValidation');
 //const expRoutes = express.Router();
 function createRouterFactory(state){
 
@@ -10,10 +11,7 @@ function createRouterFactory(state){
     const router = express.Router();
    
 
-    router.post('/api/createUser', (req,res)=>{
-        userController.createUser(req,res); 
-        
-    })
+    router.post('/api/createUser', uservalidation.validateUser,  userController.createUser);
 
     router.put('/api/users/:id',async (req,res)=>{
         const userdata = req.body;

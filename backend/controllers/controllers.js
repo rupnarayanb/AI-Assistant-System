@@ -18,12 +18,6 @@ getAllUsers = async (req,res)=>{
 createUser = async (req,res)=>{
     const userdata = req.body;
 
-    if(!userdata.name || !userdata.role){
-        return res.status(400).send({
-            message:"Name or Role is missing"
-        })
-    }
-
     try{
         const createUser = await userservice.createUser(userdata);
    
