@@ -1,21 +1,23 @@
 const userservice = require('../services/userService');
+const errorHandler = require('../middleware/errorHandler');
 const express = require('express');
 
  const router = express.Router();
 
 //const users = await userservice.getAllUsers();
 
-getAllUsers = async (req,res)=>{
+const getAllUsers = async (req,res, next)=>{
     try{
         const allUser = await userservice.getAllUsers();
         res.json(allUser);
     }catch(error){
          console.error(error);
-        res.status(500).json({"message":"Database Error"});
+         next(error);
+       // errorHandler(error, req, res, next);
     }
 }
 
-createUser = async (req,res)=>{
+const createUser = async (req,res, next)=>{
     const userdata = req.body;
 
     try{
@@ -26,9 +28,7 @@ createUser = async (req,res)=>{
             "user": createUser      
         })     
     }catch(error){
-        return res.status(500).send({
-            "message":"Internal server error"
-        })
+        next(error);
     }
 }       
 
