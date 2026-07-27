@@ -19,6 +19,29 @@ async function createUser(userdata) {
     return result.rows[0];
 }
 
+async function findUserByEmail(email) {
+    const result = await db.query(checkEmailQuery, [email]);
+    return result.rows[0];
+}
+
+async function loginUser(userData) {
+    const { email, password } = userData;
+   const user = await findUserByEmail(email);
+
+   if (!user) {
+        throw new Error('User not found');
+    }
+   
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            throw new Error('Invalid credentials');
+        }
+
+        delete user.password; // Remove the password field from the returned user object
+        return user;
+   
+}
+
 async function checkEmailExists(email) {
     const result = await db.query(checkEmailQuery, [email]);
     return result.rows.length > 0;
