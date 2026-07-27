@@ -97,7 +97,7 @@ function createRouterFactory(state){
             userController.getAllUsers(req,response);
         });
     
-
+router.post('/api/register', userController.registerUser);
     
 
     router.get('/about',(req,response)=>{

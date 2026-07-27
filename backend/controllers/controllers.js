@@ -30,11 +30,28 @@ const createUser = async (req,res, next)=>{
     }catch(error){
         next(error);
     }
-}       
+}
+
+    const registerUser = async (req,res, next)=>{
+        console.log("req.body =", req.body);
+        const userData = req.body;
+
+        try{
+            const createdUser = await userservice.registerUser(userData);
+    
+            return res.status(201).json({
+                "message": "User registered successfully",
+                "user": createdUser      
+            })     
+        }catch(error){
+            next(error);
+        }
+    }
 
 module.exports = {
     getAllUsers,
-    createUser
+    createUser,
+    registerUser
 }
 
 
