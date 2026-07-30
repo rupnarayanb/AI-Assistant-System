@@ -3,6 +3,7 @@ const db = require('./db');
 const userService = require('./services/userService');
 const userController = require('./controllers/controllers');
 const uservalidation = require('./middleware/userValidation');
+const authMiddleware = require('./middleware/authMiddleware');
 //const expRoutes = express.Router();
 function createRouterFactory(state){
 
@@ -98,6 +99,10 @@ function createRouterFactory(state){
         });
     
 router.post('/api/register', userController.registerUser);
+
+router.post('/api/login', userController.loginUser);
+
+router.get("/profile", authMiddleware, userController.getProfile);
     
 
     router.get('/about',(req,response)=>{

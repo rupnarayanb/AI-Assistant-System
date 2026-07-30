@@ -17,6 +17,22 @@ const getAllUsers = async (req,res, next)=>{
     }
 }
 
+const loginUser = async (req,res, next)=>{
+    const userData = req.body;
+
+    try{
+        const loginResponse = await userservice.loginUser(userData);
+       
+            return res.status(200).json({
+                "message": "Login successful",
+                ...loginResponse
+            })  
+       
+    }catch(error){
+        next(error);
+    }
+}
+
 const createUser = async (req,res, next)=>{
     const userdata = req.body;
 
@@ -48,11 +64,29 @@ const createUser = async (req,res, next)=>{
         }
     }
 
+    const getProfile = async (req,res, next)=>{
+        const userId = req.user.id; // Assuming the user ID is stored in req.user after authentication
+
+        try{
+            const profile = await userservice.getProfile(userId);
+    
+            if (!profile) {
+                return res.status(404).json({ message: 'Profile not found' });
+            }
+    
+            return res.status(200).json(profile);
+        }catch(error){
+            next(error);
+        }
+    }
+
 module.exports = {
     getAllUsers,
     createUser,
-    registerUser
-}
+    registerUser,
+    loginUser,
+    getProfile
+}       
 
 
 

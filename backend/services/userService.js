@@ -1,4 +1,7 @@
 const db = require('../db');
+const jwt = require('jsonwebtoken');
+const jwtSecret = process.env.JWT_SECRET || 'superSecretKey';
+
 const USERS_QUERY = 'SELECT * FROM users';
 const queryText = `INSERT INTO users(name, role ) VALUES($1, $2) RETURNING *`;
 const queryTextForRegister = `INSERT INTO users(name, email, password, role) VALUES($1, $2, $3, $4) RETURNING *`;
@@ -37,8 +40,10 @@ async function loginUser(userData) {
             throw new Error('Invalid credentials');
         }
 
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role}, jwtSecret, { expiresIn: '1h' });
+
         delete user.password; // Remove the password field from the returned user object
-        return user;
+        return {token, user };
    
 }
 
@@ -75,5 +80,6 @@ async function registerUser(userdata) {
 module.exports = {
     getAllUsers,
     createUser,
-    registerUser
+    registerUser,
+    loginUser
 };
