@@ -33,6 +33,51 @@ const loginUser = async (req,res, next)=>{
     }
 }
 
+const logoutUser = async (req,res, next)=>{
+    const refreshToken = req.body.refreshToken;
+
+    try{
+        await userservice.deleteRefreshToken(refreshToken);
+        return res.status(200).json({
+            "message": "Logout successful"
+        });
+    }catch(error){
+        next(error);
+    }
+}
+
+const loginUser = async (req,res, next)=>{
+    const userData = req.body;
+
+    try{
+        const loginResponse = await userservice.loginUser(userData);
+       
+            return res.status(200).json({
+                "message": "Login successful",
+                ...loginResponse
+            })  
+       
+    }catch(error){
+        next(error);
+    }
+}
+
+const refreshToken = async (req,res, next)=>{
+    const refreshToken = req.body.refreshToken;
+
+    try{
+        const newAccessToken = await userservice.refreshToken(refreshToken);
+       
+            return res.status(200).json({
+                "message": "Access token refreshed successfully",
+                "accessToken": newAccessToken
+            })
+       
+    }catch(error){
+        next(error);
+    }
+}
+
 const createUser = async (req,res, next)=>{
     const userdata = req.body;
 
@@ -85,7 +130,9 @@ module.exports = {
     createUser,
     registerUser,
     loginUser,
-    getProfile
+    getProfile,
+    refreshToken,
+    logoutUser
 }       
 
 

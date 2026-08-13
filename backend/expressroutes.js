@@ -4,6 +4,7 @@ const userService = require('./services/userService');
 const userController = require('./controllers/controllers');
 const uservalidation = require('./middleware/userValidation');
 const authMiddleware = require('./middleware/authMiddleware');
+const  authorizeRoles  = require('./middleware/authorizeMiddleware');
 //const expRoutes = express.Router();
 function createRouterFactory(state){
 
@@ -102,7 +103,11 @@ router.post('/api/register', userController.registerUser);
 
 router.post('/api/login', userController.loginUser);
 
-router.get("/profile", authMiddleware, userController.getProfile);
+router.post('/api/logout', userController.logoutUser);
+
+router.post("/refresh-token", userController.refreshToken);
+
+router.get("/profile", authMiddleware, authorizeRoles("Developer aasds"), userController.getProfile);
     
 
     router.get('/about',(req,response)=>{

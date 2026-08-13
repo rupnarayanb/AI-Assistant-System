@@ -1,13 +1,59 @@
 const db = require('../db');
 const jwt = require('jsonwebtoken');
-const jwtSecret = process.env.JWT_SECRET || 'superSecretKey';
+const accessTokenSecret = process.env.JWT_ACCESS_SECRET || 'superSecretKey';
+const refreshTokenSecret = process.env.JWT_REFRESH_SECRET || 'superRefreshKey';
 
 const USERS_QUERY = 'SELECT * FROM users';
 const queryText = `INSERT INTO users(name, role ) VALUES($1, $2) RETURNING *`;
 const queryTextForRegister = `INSERT INTO users(name, email, password, role) VALUES($1, $2, $3, $4) RETURNING *`;
 const checkEmailQuery = `SELECT * FROM users WHERE email = $1`;
+const refreshTokenQuery = `INSERT INTO refresh_tokens(user_id, token, expires_at) VALUES($1, $2, $3) RETURNING *`;
 const bcrypt = require('bcrypt');
 
+
+async function saveRefreshToken(userId, token, expiresAt) {
+    const result = await db.query(refreshTokenQuery, [userId, token, expiresAt]);
+    return result.rows[0];
+}
+
+async function deleteRefreshToken(token) {
+    await db.query('DELETE FROM refresh_tokens WHERE token = $1', [token]);
+}
+
+async function refreshAccessToken(refreshToken) {
+    try {
+        const decoded = jwt.verify(refreshToken, refreshTokenSecret);
+        const userId = decoded.id;
+
+        const storedToken = await findRefreshToken(userId, refreshToken); // Check if the refresh token exists in the database
+
+        if (!storedToken) {
+            throw new Error('Invalid refresh token');
+        }
+
+        const user = await findUserById(userId);
+
+        // Generate a new access token
+        const newAccessToken = jwt.sign({ id: userId, email: user.email, role: user.role }, accessTokenSecret, { expiresIn: '1h' });
+        return newAccessToken;
+    } catch (error) {
+        throw new Error('Invalid or expired refresh token');
+    }
+}
+
+async function findUserById(id) {
+    const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+    return result.rows[0];
+}
+
+
+async function findRefreshToken(userID, refreshToken) {
+     // Check if the refresh token exists in the database
+        const result = await db.query('SELECT * FROM refresh_tokens WHERE user_id = $1 AND token = $2', [userID, refreshToken]);
+        if (result.rows.length === 0) {
+            throw new Error('Invalid refresh token');
+        }
+}
 
 
 
@@ -40,10 +86,12 @@ async function loginUser(userData) {
             throw new Error('Invalid credentials');
         }
 
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.role}, jwtSecret, { expiresIn: '1h' });
+        const accessToken = jwt.sign({ id: user.id, email: user.email, role: user.role}, accessTokenSecret, { expiresIn: '1h' });
+        const refreshToken = jwt.sign({ id: user.id}, refreshTokenSecret, { expiresIn: '30d' });
+        await saveRefreshToken(user.id, refreshToken, new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)); // Save refresh token with expiration date
 
         delete user.password; // Remove the password field from the returned user object
-        return {token, user };
+        return {accessToken, refreshToken, user };
    
 }
 
@@ -81,5 +129,9 @@ module.exports = {
     getAllUsers,
     createUser,
     registerUser,
-    loginUser
+    loginUser,
+    findUserById,
+    refreshAccessToken,
+    findRefreshToken,
+    saveRefreshToken
 };

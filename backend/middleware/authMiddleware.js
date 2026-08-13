@@ -1,5 +1,6 @@
 const jwtToken = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET || 'superSecretKey';
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'superRefreshKey';
 
 const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
