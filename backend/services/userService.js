@@ -2,6 +2,8 @@ const db = require('../db');
 const jwt = require('jsonwebtoken');
 const accessTokenSecret = process.env.JWT_ACCESS_SECRET || 'superSecretKey';
 const refreshTokenSecret = process.env.JWT_REFRESH_SECRET || 'superRefreshKey';
+const NotFoundError = require('../errors/NotFoundError');
+const AuthenticationError = require('../errors/AuthintacationError');
 
 const USERS_QUERY = 'SELECT * FROM users';
 const queryText = `INSERT INTO users(name, role ) VALUES($1, $2) RETURNING *`;
@@ -78,12 +80,12 @@ async function loginUser(userData) {
    const user = await findUserByEmail(email);
 
    if (!user) {
-        throw new Error('User not found');
+        throw new NotFoundError('User not found');
     }
    
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            throw new Error('Invalid credentials');
+            throw new AuthenticationError('Invalid credentials');
         }
 
         const accessToken = jwt.sign({ id: user.id, email: user.email, role: user.role}, accessTokenSecret, { expiresIn: '1h' });
