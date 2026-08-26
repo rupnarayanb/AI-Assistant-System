@@ -105,9 +105,9 @@ router.post('/api/login', userController.loginUser);
 
 router.post('/api/logout', userController.logoutUser);
 
-router.post("/refresh-token", userController.refreshToken);
+router.post("/api/refresh-token", userController.refreshToken);
 
-router.get("/profile", authMiddleware, authorizeRoles("Developer aasds"), userController.getProfile);
+router.get("/api/profile", authMiddleware, authorizeRoles("Developer aasds"), userController.getProfile);
     
 
     router.get('/about',(req,response)=>{
@@ -127,15 +127,14 @@ router.get("/profile", authMiddleware, authorizeRoles("Developer aasds"), userCo
         res.send([{'name':"produc1", 'owner':'Rup'}, {'name':"produc2", 'owner':'Rup2'}])
     })
 
-    router.get('/api/profile',(req,res)=>{
-        res.send([{'name':'Rup', 'skills':{'frontend':true, 'backend':true}}])
-    });
+    // router.get('/api/profile',(req,res)=>{
+    //     res.send([{'name':'Rup', 'skills':{'frontend':true, 'backend':true}}])
+    // });
 
     
 
     router.get('/api/users/:id',(req,res)=>{
         const userId = Number(req.params.id);
-        console.log(users);
         const user = users.find((item) => item.id === userId);
     
         if (!user) {
@@ -169,9 +168,9 @@ router.get("/profile", authMiddleware, authorizeRoles("Developer aasds"), userCo
         res.send([{'name':"produc1", 'owner':'Rup'}, {'name':"produc2", 'owner':'Rup2'}])
     })
 
-    router.get('/api/profile',(req,res)=>{
-        res.send([{'name':'Rup', 'skills':{'frontend':true, 'backend':true}}])
-    });
+    // router.get('/api/profile',(req,res)=>{
+    //     res.send([{'name':'Rup', 'skills':{'frontend':true, 'backend':true}}])
+    // });
 
     return router
 

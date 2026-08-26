@@ -46,22 +46,6 @@ const logoutUser = async (req,res, next)=>{
     }
 }
 
-const loginUser = async (req,res, next)=>{
-    const userData = req.body;
-
-    try{
-        const loginResponse = await userservice.loginUser(userData);
-       
-            return res.status(200).json({
-                "message": "Login successful",
-                ...loginResponse
-            })  
-       
-    }catch(error){
-        next(error);
-    }
-}
-
 const refreshToken = async (req,res, next)=>{
     const refreshToken = req.body.refreshToken;
 
