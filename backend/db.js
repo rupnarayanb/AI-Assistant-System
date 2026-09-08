@@ -1,15 +1,16 @@
 const {Pool} = require('pg');
+const config = require('./config/config');
 
 
 
 const pool = new Pool({
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || '',
-    host: process.env.DB_HOST || 'localhost',
-    port: Number(process.env.DB_PORT || 5432),
-    database: process.env.DB_NAME || 'ai_assistant'
-
+    user: config.db.user,
+    password: config.db.password,
+    host: config.db.host,
+    port: config.db.port,
+    database: config.db.database
 })
+
 
 module.exports ={
     query:(text,params)=>pool.query(text,params),

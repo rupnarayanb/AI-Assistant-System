@@ -1,7 +1,8 @@
 const jwtToken = require('jsonwebtoken');
 const AuthenticationError = require('../errors/AuthintacationError');
-const jwtSecret = process.env.JWT_SECRET || 'superSecretKey';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'superRefreshKey';
+const config = require('../config/config');
+const jwtSecret = config.jwt.accessTokenSecret;
+const JWT_REFRESH_SECRET = config.jwt.refreshTokenSecret;
 
 const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
