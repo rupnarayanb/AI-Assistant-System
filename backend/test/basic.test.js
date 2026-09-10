@@ -3,6 +3,10 @@ const db = require('../db');
 const userService = require('../services/userService');
 const bcrypt = require('bcrypt');
 const userController = require('../controllers/controllers');   
+const app = require('../index'); // Import your Express app
+const request = require('supertest');
+const authinticationError = require('../errors/AuthintacationError');
+const AuthenticationError = require('../errors/AuthintacationError');
 
 
 
@@ -131,3 +135,85 @@ test("userController.loginUser should call next with error if login fails", asyn
     expect(next).toHaveBeenCalledWith(new Error("Invalid credentials"));
     userService.loginUser.mockRestore();
 });
+
+test("POST /api/login should return 200 and user data if credentials are correct", async () => {
+
+
+
+    const mockUser = {
+        id: 1,
+        name: "Test User",
+        email: "test@example.com",
+        role: "user"
+    };
+
+    
+
+
+
+
+    jest.spyOn(userService, 'loginUser').mockResolvedValue({
+         user: mockUser,
+        accessToken: "mockAccessToken",
+        refreshToken: "mockRefreshToken"
+
+    });
+
+    const response = await request(app).post('/api/login').send({
+        email: "test@example.com",
+        password: "testpassword"
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+        message: "Login successful",
+        user: mockUser,
+        accessToken: "mockAccessToken",
+        refreshToken: "mockRefreshToken"
+    });
+
+    userService.loginUser.mockRestore();
+
+
+})
+
+
+test("POST /api/login should return 401 when credentials are invalid", async () => {
+
+    const error = new AuthenticationError("Invalid credentials");
+    jest.spyOn(userService, 'loginUser').mockRejectedValue(error);
+
+    const response = await request(app).post('/api/login').send({
+        email: "test@example.com",
+        password: "wrongpassword"
+    });
+
+    expect(response.status).toBe(401);
+    expect(response.body).toEqual({
+        message: "Invalid credentials",
+        status:401
+    });
+
+    userService.loginUser.mockRestore();
+});
+
+test("refreshToken should return new access token if refresh token is valid", async () => {
+    const mockRefreshToken = "validRefreshToken";
+    const mockUserId = 1;
+    const mockUser = { id: mockUserId, email: "test@example.com", role: "user" };
+
+    jest.spyOn(jwt, 'verify').mockReturnValue({ id: mockUserId });
+    jest.spyOn(db, 'query').mockResolvedValueOnce({ rows: [{ user_id: mockUserId, token: mockRefreshToken }] }).mockResolvedValueOnce({ rows: [mockUser] }); // Mock the database query to return a valid refresh token
+    jest.spyOn(jwt, 'sign').mockReturnValue("newAccessToken");
+
+    const newAccessToken = await userService.refreshAccessToken(mockRefreshToken);
+
+    expect(jwt.verify).toHaveBeenCalledWith(mockRefreshToken, expect.any(String));
+    expect(db.query).toHaveBeenCalledTimes(2);
+    expect(jwt.sign).toHaveBeenCalledWith({ id: mockUserId, email: mockUser.email, role: mockUser.role }, expect.any(String), { expiresIn: '1h' });
+    expect(newAccessToken).toBe("newAccessToken");
+
+    jwt.verify.mockRestore();
+    db.query.mockRestore();
+    jwt.sign.mockRestore();
+})
