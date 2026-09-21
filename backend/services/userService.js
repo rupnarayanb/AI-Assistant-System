@@ -5,13 +5,38 @@ const refreshTokenSecret = process.env.JWT_REFRESH_SECRET || 'superRefreshKey';
 const NotFoundError = require('../errors/NotFoundError');
 const AuthenticationError = require('../errors/AuthintacationError');
 
-const USERS_QUERY = 'SELECT * FROM users';
+
+const USERS_QUERY = `SELECT * FROM users ORDER BY id LIMIT 5 OFFSET 0`;
+const USERS_QUERY_BYROLE = `SELECT *
+FROM users
+WHERE role = 'QA5'
+ORDER BY id`;
+const USERS_SORT_DESC = `SELECT * FROM users ORDER BY id DESC`;
 const queryText = `INSERT INTO users(name, role ) VALUES($1, $2) RETURNING *`;
 const queryTextForRegister = `INSERT INTO users(name, email, password, role) VALUES($1, $2, $3, $4) RETURNING *`;
+const queryTextForProfileRegister = `INSERT INTO profiles(user_id, bio) VALUES($1, $2) RETURNING *`;
 const checkEmailQuery = `SELECT * FROM users WHERE email = $1`;
 const refreshTokenQuery = `INSERT INTO refresh_tokens(user_id, token, expires_at) VALUES($1, $2, $3) RETURNING *`;
 const bcrypt = require('bcrypt');
 
+
+async function createUserWithProfile(userdata) {
+     const client = await db.getClient();
+    try{
+        await client.query('BEGIN'); // transaction
+      const queryValues = [userdata.name,userdata.role];
+    const userResult = await client.query(queryText, queryValues);
+    const userId = userResult.rows[0].id;
+    await client.query(queryTextForProfileRegister, [userId, userdata.bio]);
+    await client.query('COMMIT');   
+    }catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
+    }
+        
+}
 
 async function saveRefreshToken(userId, token, expiresAt) {
     const result = await db.query(refreshTokenQuery, [userId, token, expiresAt]);
@@ -61,10 +86,28 @@ async function findRefreshToken(userID, refreshToken) {
 
 
 
-async function getAllUsers() {
-    const result = await db.query(USERS_QUERY);
+async function getAllUsers(sortBy, sortOrder) {
+
+    const allowedSortColumns = {
+        id: 'id',
+        name: 'name',
+        role: 'role'
+    };
+
+    const allowedSortOrders = ['asc', 'desc'];
+
+    const sortColumn = allowedSortColumns[sortBy] || 'id'; // Default to 'id' if sortBy is not provided or invalid
+    const order = allowedSortOrders.includes(sortOrder) ? sortOrder : 'asc'; // Default to 'asc' if sortOrder is not provided or invalid
+
+    const queryText = `SELECT * FROM users ORDER BY ${sortColumn} ${order} LIMIT 5 OFFSET 0`;
+
+    const result = await db.query(queryText);
     return result.rows;
 }
+
+//     const result = await db.query(USERS_SORT_DESC);
+//     return result.rows;
+// }
 
 async function createUser(userdata) {
      const queryValues = [userdata.name,userdata.role];
@@ -137,5 +180,6 @@ module.exports = {
     findUserById,
     refreshAccessToken,
     findRefreshToken,
-    saveRefreshToken
+    saveRefreshToken,
+    createUserWithProfile
 };

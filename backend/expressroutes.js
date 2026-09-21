@@ -98,6 +98,8 @@ function createRouterFactory(state){
         router.get('/api/users', (req,response)=>{
             userController.getAllUsers(req,response);
         });
+
+router.post('/api/users/with-profile', userController.createUserWithProfile);
     
 router.post('/api/register', userController.registerUser);
 

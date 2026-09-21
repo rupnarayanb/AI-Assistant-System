@@ -4,11 +4,22 @@ const express = require('express');
 
  const router = express.Router();
 
-//const users = await userservice.getAllUsers();
+const createUserWithProfile = async (req, res, next) => {
+    try {
+        const result = await userservice.createUserWithProfile(req.body);
+        return res.status(201).json({
+            message: 'User and profile created successfully',
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 const getAllUsers = async (req,res, next)=>{
     try{
-        const allUser = await userservice.getAllUsers();
+        const { sortBy, sortOrder } = req.query;
+        const allUser = await userservice.getAllUsers(sortBy, sortOrder);
         res.json(allUser);
     }catch(error){
          console.error(error);
@@ -116,7 +127,8 @@ module.exports = {
     loginUser,
     getProfile,
     refreshToken,
-    logoutUser
+    logoutUser,
+    createUserWithProfile
 }       
 
 

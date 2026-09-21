@@ -1,4 +1,4 @@
-const app = require('./app');
+const app = require('./index');
 const logger = require('./utils/logger');
 
 app.listen(3000, () => {
