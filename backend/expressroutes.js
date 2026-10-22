@@ -5,6 +5,8 @@ const userController = require('./controllers/controllers');
 const uservalidation = require('./middleware/userValidation');
 const authMiddleware = require('./middleware/authMiddleware');
 const  authorizeRoles  = require('./middleware/authorizeMiddleware');
+const loginLimiter = require('./middleware/rateLimiter');
+const upload = require('./middleware/fileUpload');
 //const expRoutes = express.Router();
 function createRouterFactory(state){
 
@@ -103,13 +105,19 @@ router.post('/api/users/with-profile', userController.createUserWithProfile);
     
 router.post('/api/register', userController.registerUser);
 
-router.post('/api/login', userController.loginUser);
+router.post('/api/login', loginLimiter, userController.loginUser);
 
 router.post('/api/logout', userController.logoutUser);
 
 router.post("/api/refresh-token", userController.refreshToken);
 
 router.get("/api/profile", authMiddleware, authorizeRoles("Developer aasds"), userController.getProfile);
+
+router.get("/api/health", userController.healthCheck);
+
+router.post("/api/upload", upload.single("file"), userController.uploadFile);
+
+router.post("/api/background-job" , userController.processBackgroundJob);
     
 
     router.get('/about',(req,response)=>{

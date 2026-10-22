@@ -19,5 +19,8 @@ module.exports = {
     jwt: {
         accessTokenSecret: process.env.JWT_ACCESS_SECRET,
         refreshTokenSecret: process.env.JWT_REFRESH_SECRET
+    },
+    server: {
+        port: Number(process.env.PORT || 3000)
     }
 }

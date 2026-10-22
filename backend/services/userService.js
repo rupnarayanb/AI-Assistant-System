@@ -1,7 +1,7 @@
 const db = require('../db');
 const jwt = require('jsonwebtoken');
-const accessTokenSecret = process.env.JWT_ACCESS_SECRET || 'superSecretKey';
-const refreshTokenSecret = process.env.JWT_REFRESH_SECRET || 'superRefreshKey';
+const accessTokenSecret = process.env.JWT_ACCESS_SECRET ;
+const refreshTokenSecret = process.env.JWT_REFRESH_SECRET ;
 const NotFoundError = require('../errors/NotFoundError');
 const AuthenticationError = require('../errors/AuthintacationError');
 
@@ -15,7 +15,7 @@ const USERS_SORT_DESC = `SELECT * FROM users ORDER BY id DESC`;
 const queryText = `INSERT INTO users(name, role ) VALUES($1, $2) RETURNING *`;
 const queryTextForRegister = `INSERT INTO users(name, email, password, role) VALUES($1, $2, $3, $4) RETURNING *`;
 const queryTextForProfileRegister = `INSERT INTO profiles(user_id, bio) VALUES($1, $2) RETURNING *`;
-const checkEmailQuery = `SELECT * FROM users WHERE email = $1`;
+const checkEmailQuery = `SELECT * FROM users WHERE email = $1`; 
 const refreshTokenQuery = `INSERT INTO refresh_tokens(user_id, token, expires_at) VALUES($1, $2, $3) RETURNING *`;
 const bcrypt = require('bcrypt');
 
