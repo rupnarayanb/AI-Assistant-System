@@ -181,5 +181,6 @@ module.exports = {
     refreshAccessToken,
     findRefreshToken,
     saveRefreshToken,
-    createUserWithProfile
+    createUserWithProfile,
+    deleteRefreshToken
 };

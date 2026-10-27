@@ -105,7 +105,7 @@ const refreshToken = async (req,res, next)=>{
     const refreshToken = req.body.refreshToken;
 
     try{
-        const newAccessToken = await userservice.refreshToken(refreshToken);
+        const newAccessToken = await userservice.refreshAccessToken(refreshToken);
        
             return res.status(200).json({
                 "message": "Access token refreshed successfully",
